@@ -26,8 +26,17 @@ type Client struct {
 }
 
 // MediasShow returns information about a specific piece of media
-func (c *Client) MediasShow(ctx context.Context, id string) (*Media, error) {
-	endpoint := fmt.Sprintf("%s/medias/%s.json?access_token=%s", c.BaseURL, id, c.accessToken)
+func (c *Client) MediasShow(ctx context.Context,
+	id string,
+	options *PaginationOptions) (*Media, error) {
+
+	paginationOpts := getPaginationOptions(options)
+	endpoint := fmt.Sprintf("%s/medias/%s.json?%s&access_token=%s",
+		c.BaseURL,
+		paginationOpts,
+		id,
+		c.accessToken)
+
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return nil, err
@@ -44,7 +53,9 @@ func (c *Client) MediasShow(ctx context.Context, id string) (*Media, error) {
 }
 
 // ProjectsList returns a list of projects from Wistia
-func (c *Client) ProjectsList(ctx context.Context, options *PaginationOptions) (*Projects, error) {
+func (c *Client) ProjectsList(ctx context.Context,
+	options *PaginationOptions) (*Projects, error) {
+
 	paginationOpts := getPaginationOptions(options)
 	endpoint := fmt.Sprintf("%s/projects.json?%s&access_token=%s",
 		c.BaseURL,
@@ -67,8 +78,16 @@ func (c *Client) ProjectsList(ctx context.Context, options *PaginationOptions) (
 }
 
 // ProjectShow returns a project from Wistia
-func (c *Client) ProjectShow(ctx context.Context, id string) (*Project, error) {
-	endpoint := fmt.Sprintf("%s/projects/%s.json?access_token=%s", c.BaseURL, id, c.accessToken)
+func (c *Client) ProjectShow(ctx context.Context,
+	id string,
+	options *PaginationOptions) (*Project, error) {
+
+	paginationOpts := getPaginationOptions(options)
+	endpoint := fmt.Sprintf("%s/projects/%s.json?%s&access_token=%s",
+		c.BaseURL,
+		id,
+		paginationOpts,
+		c.accessToken)
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return nil, err
