@@ -25,6 +25,24 @@ type Client struct {
 	HTTPClient *http.Client
 }
 
+// MediasShow returns information about a specific piece of media
+func (c *Client) MediasShow(ctx context.Context, id string) (*Media, error) {
+	endpoint := fmt.Sprintf("%s/medias/%s.json?access_token=%s", c.BaseURL, id, c.accessToken)
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req = req.WithContext(ctx)
+
+	res := Media{}
+	if err := c.sendRequest(req, &res); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 // ProjectsList returns a list of projects from Wistia
 func (c *Client) ProjectsList(ctx context.Context) (*Projects, error) {
 	endpoint := fmt.Sprintf("%s/projects.json?access_token=%s", c.BaseURL, c.accessToken)
