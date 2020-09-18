@@ -25,17 +25,27 @@ type Client struct {
 	HTTPClient *http.Client
 }
 
+// NewClient returns a pointer to Client
+func NewClient(accessToken string) *Client {
+	return &Client{
+		BaseURL:     BaseURLv1,
+		accessToken: accessToken,
+		HTTPClient: &http.Client{
+			Timeout: time.Minute,
+		},
+	}
+}
+
 // MediasShow returns information about a specific piece of media
 func (c *Client) MediasShow(ctx context.Context,
 	id string,
 	options *PaginationOptions) (*Media, error) {
 
-	paginationOpts := getPaginationOptions(options)
-	endpoint := fmt.Sprintf("%s/medias/%s.json?%s&access_token=%s",
+	opts := c.getOpts(options)
+	endpoint := fmt.Sprintf("%s/medias/%s.json?%s",
 		c.BaseURL,
 		id,
-		paginationOpts,
-		c.accessToken)
+		opts)
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
@@ -56,11 +66,10 @@ func (c *Client) MediasShow(ctx context.Context,
 func (c *Client) ProjectsList(ctx context.Context,
 	options *PaginationOptions) (*Projects, error) {
 
-	paginationOpts := getPaginationOptions(options)
-	endpoint := fmt.Sprintf("%s/projects.json?%s&access_token=%s",
+	opts := c.getOpts(options)
+	endpoint := fmt.Sprintf("%s/projects.json?%s",
 		c.BaseURL,
-		paginationOpts,
-		c.accessToken)
+		opts)
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
@@ -82,12 +91,12 @@ func (c *Client) ProjectShow(ctx context.Context,
 	id string,
 	options *PaginationOptions) (*Project, error) {
 
-	paginationOpts := getPaginationOptions(options)
-	endpoint := fmt.Sprintf("%s/projects/%s.json?%s&access_token=%s",
+	opts := c.getOpts(options)
+	endpoint := fmt.Sprintf("%s/projects/%s.json?%s",
 		c.BaseURL,
 		id,
-		paginationOpts,
-		c.accessToken)
+		opts)
+
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return nil, err
@@ -101,6 +110,26 @@ func (c *Client) ProjectShow(ctx context.Context,
 	}
 
 	return &res, nil
+}
+
+func (c *Client) getOpts(paginationOpts *PaginationOptions) string {
+	page := 1
+	perPage := 100
+	sortBy := "name"
+	sortDirection := 1
+	if paginationOpts != nil {
+		page = paginationOpts.Page
+		perPage = paginationOpts.PerPage
+		sortBy = paginationOpts.SortBy
+		sortDirection = paginationOpts.SortDirection
+	}
+
+	return fmt.Sprintf("page=%d&per_page=%d&sort_by=%s&sort_direction=%d&access_token=%s",
+		page,
+		perPage,
+		sortBy,
+		sortDirection,
+		c.accessToken)
 }
 
 func (c *Client) sendRequest(req *http.Request, v interface{}) error {
@@ -123,34 +152,4 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) error {
 	}
 
 	return nil
-}
-
-// NewClient returns a pointer to Client
-func NewClient(accessToken string) *Client {
-	return &Client{
-		BaseURL:     BaseURLv1,
-		accessToken: accessToken,
-		HTTPClient: &http.Client{
-			Timeout: time.Minute,
-		},
-	}
-}
-
-func getPaginationOptions(options *PaginationOptions) string {
-	page := 1
-	perPage := 100
-	sortBy := "name"
-	sortDirection := 1
-	if options != nil {
-		page = options.Page
-		perPage = options.PerPage
-		sortBy = options.SortBy
-		sortDirection = options.SortDirection
-	}
-
-	return fmt.Sprintf("page=%d&per_page=%d&sort_by=%s&sort_direction=%d",
-		page,
-		perPage,
-		sortBy,
-		sortDirection)
 }
