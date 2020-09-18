@@ -43,6 +43,24 @@ func (c *Client) ProjectsList(ctx context.Context) (*Projects, error) {
 	return &res, nil
 }
 
+// ProjectShow returns a project from Wistia
+func (c *Client) ProjectShow(ctx context.Context, id int) (*Project, error) {
+	endpoint := fmt.Sprintf("%s/projects/%d.json?access_token=%s", c.BaseURL, id, c.accessToken)
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req = req.WithContext(ctx)
+
+	res := Project{}
+	if err := c.sendRequest(req, &res); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 func (c *Client) sendRequest(req *http.Request, v interface{}) error {
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	req.Header.Set("Accept", "application/json; charset=utf-8")
