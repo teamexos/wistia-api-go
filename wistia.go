@@ -44,8 +44,13 @@ func (c *Client) MediasShow(ctx context.Context, id string) (*Media, error) {
 }
 
 // ProjectsList returns a list of projects from Wistia
-func (c *Client) ProjectsList(ctx context.Context) (*Projects, error) {
-	endpoint := fmt.Sprintf("%s/projects.json?access_token=%s", c.BaseURL, c.accessToken)
+func (c *Client) ProjectsList(ctx context.Context, options *PaginationOptions) (*Projects, error) {
+	paginationOpts := getPaginationOptions(options)
+	endpoint := fmt.Sprintf("%s/projects.json?%s&access_token=%s",
+		c.BaseURL,
+		paginationOpts,
+		c.accessToken)
+
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		return nil, err
@@ -110,4 +115,23 @@ func NewClient(accessToken string) *Client {
 			Timeout: time.Minute,
 		},
 	}
+}
+
+func getPaginationOptions(options *PaginationOptions) string {
+	page := 1
+	perPage := 100
+	sortBy := "name"
+	sortDirection := 1
+	if options != nil {
+		page = options.Page
+		perPage = options.PerPage
+		sortBy = options.SortBy
+		sortDirection = options.SortDirection
+	}
+
+	return fmt.Sprintf("page=%d&per_page=%d&sort_by=%s&sort_direction=%d",
+		page,
+		perPage,
+		sortBy,
+		sortDirection)
 }
