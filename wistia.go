@@ -33,8 +33,8 @@ func (c *Client) MediasShow(ctx context.Context,
 	paginationOpts := getPaginationOptions(options)
 	endpoint := fmt.Sprintf("%s/medias/%s.json?%s&access_token=%s",
 		c.BaseURL,
-		paginationOpts,
 		id,
+		paginationOpts,
 		c.accessToken)
 
 	req, err := http.NewRequest("GET", endpoint, nil)
