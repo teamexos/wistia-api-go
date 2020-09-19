@@ -18,3 +18,7 @@ client := wistia.NewClient("ACCESS_TOKEN")
 ```
 
 ## Testing
+
+```go
+go test -v -tags=unit
+```
