@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 )
 
 const (
@@ -22,17 +21,15 @@ type Client struct {
 	accessToken string
 
 	// HTTPClient is the client that makes the HTTP requests
-	HTTPClient *http.Client
+	HTTPClient HTTPClient
 }
 
 // NewClient returns a pointer to Client
-func NewClient(accessToken string) *Client {
+func NewClient(httpClient HTTPClient, accessToken string) *Client {
 	return &Client{
 		BaseURL:     BaseURLv1,
 		accessToken: accessToken,
-		HTTPClient: &http.Client{
-			Timeout: time.Minute,
-		},
+		HTTPClient:  httpClient,
 	}
 }
 
