@@ -37,5 +37,8 @@ func TestMediasShow(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, medias)
 	assert.EqualValues(t, 4489021, medias.ID)
-
+	assert.EqualValues(t, 464427, medias.Project.ID)
+	assert.EqualValues(t, "How They Work", medias.Project.Name)
+	assert.EqualValues(t, "ln2k6qwi9k", medias.Project.HashedID)
+	assert.EqualValues(t, 4, len(medias.Assets))
 }
