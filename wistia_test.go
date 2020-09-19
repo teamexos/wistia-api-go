@@ -68,3 +68,22 @@ func TestProjectsList(t *testing.T) {
 		assert.NotNil(t, project.PublicID)
 	}
 }
+
+func TestProjectsShow(t *testing.T) {
+
+	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       fixtures.ProjectsShow(),
+		}, nil
+	}
+
+	project, err := wistiaClient.ProjectShow(ctx, "fakeID", nil)
+
+	assert.Nil(t, err)
+	assert.NotNil(t, project)
+	assert.EqualValues(t, 464427, project.ID)
+	assert.EqualValues(t, "ln2k6qwi9k", project.HashedID)
+	assert.EqualValues(t, 3, project.MediaCount)
+	assert.EqualValues(t, 3, len(project.Medias))
+}
