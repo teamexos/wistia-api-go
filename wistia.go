@@ -8,28 +8,28 @@ import (
 )
 
 const (
-	// BaseURLv1 is the base URL for v1 of the Wistia API
-	BaseURLv1 = "https://api.wistia.com/v1"
+	// baseURLv1 is the base URL for v1 of the Wistia API
+	baseURLv1 = "https://api.wistia.com/v1"
 )
 
 // Client is the base client for access Wistia APIs
 type Client struct {
-	// BaseURL is the base URL for requests
-	BaseURL string
+	// baseURL is the base URL for requests
+	baseURL string
 
 	// accessToken is the token used to authenticate requests
 	accessToken string
 
-	// HTTPClient is the client that makes the HTTP requests
-	HTTPClient HTTPClient
+	// httpClient is the client that makes the HTTP requests
+	httpClient HTTPClient
 }
 
 // NewClient returns a pointer to Client
 func NewClient(httpClient HTTPClient, accessToken string) *Client {
 	return &Client{
-		BaseURL:     BaseURLv1,
+		baseURL:     baseURLv1,
 		accessToken: accessToken,
-		HTTPClient:  httpClient,
+		httpClient:  httpClient,
 	}
 }
 
@@ -40,7 +40,7 @@ func (c *Client) MediasShow(ctx context.Context,
 
 	opts := c.getOpts(options)
 	endpoint := fmt.Sprintf("%s/medias/%s.json?%s",
-		c.BaseURL,
+		c.baseURL,
 		id,
 		opts)
 
@@ -65,7 +65,7 @@ func (c *Client) ProjectsList(ctx context.Context,
 
 	opts := c.getOpts(options)
 	endpoint := fmt.Sprintf("%s/projects.json?%s",
-		c.BaseURL,
+		c.baseURL,
 		opts)
 
 	req, err := http.NewRequest("GET", endpoint, nil)
@@ -90,7 +90,7 @@ func (c *Client) ProjectShow(ctx context.Context,
 
 	opts := c.getOpts(options)
 	endpoint := fmt.Sprintf("%s/projects/%s.json?%s",
-		c.BaseURL,
+		c.baseURL,
 		id,
 		opts)
 
@@ -133,7 +133,7 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) error {
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	req.Header.Set("Accept", "application/json; charset=utf-8")
 
-	res, err := c.HTTPClient.Do(req)
+	res, err := c.httpClient.Do(req)
 	if err != nil {
 		return err
 	}
