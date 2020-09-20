@@ -15,8 +15,8 @@ import "github.com/teamexos/wistia-api-go"
 
 // Replace ACCESS_TOKEN with your real access token
 
-restClient := wistia.DefaultHTTPClient()
-wistiaClient := wistia.NewClient(restClient, "ACCESS_TOKEN")
+httpClient := wistia.DefaultHTTPClient()
+wistiaClient := wistia.NewClient(httpClient, "ACCESS_TOKEN")
 ```
 
 ## Testing

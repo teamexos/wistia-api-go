@@ -14,15 +14,15 @@ import (
 )
 
 var (
-	restClient   *mocks.MockHTTPClient
+	httpClient   *mocks.MockHTTPClient
 	ctx          context.Context
 	wistiaClient *wistia.Client
 )
 
 func init() {
-	restClient = &mocks.MockHTTPClient{}
+	httpClient = &mocks.MockHTTPClient{}
 	ctx = context.Background()
-	wistiaClient = wistia.NewClient(restClient, "access_token")
+	wistiaClient = wistia.NewClient(httpClient, "access_token")
 }
 
 func TestMediasShow(t *testing.T) {
