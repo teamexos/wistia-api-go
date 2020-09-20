@@ -22,6 +22,6 @@ type Media struct {
 		ID       int    `json:"id"`
 		Name     string `json:"name"`
 		HashedID string `json:"hashed_id"`
-	} `json:"project"`
+	} `json:"project,omitempty"`
 	Assets []Asset `json:"assets"`
 }
