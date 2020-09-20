@@ -86,4 +86,8 @@ func TestProjectsShow(t *testing.T) {
 	assert.EqualValues(t, "ln2k6qwi9k", project.HashedID)
 	assert.EqualValues(t, 3, project.MediaCount)
 	assert.EqualValues(t, 3, len(project.Medias))
+
+	for _, media := range project.Medias {
+		assert.Nil(t, media.Section)
+	}
 }

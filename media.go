@@ -12,6 +12,7 @@ type Media struct {
 	Description string  `json:"description"`
 	Progress    float32 `json:"progress"`
 	Status      string  `json:"status"`
+	Section     string  `json:"section"`
 	Thumbnail   struct {
 		URL    string `json:"url"`
 		Width  int    `json:"width"`
