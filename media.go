@@ -19,9 +19,9 @@ type Media struct {
 		Height int    `json:"height"`
 	} `json:"thumbnail"`
 	Project struct {
-		ID       int    `json:"id"`
-		Name     string `json:"name"`
-		HashedID string `json:"hashed_id"`
+		ID       int    `json:"id,omitempty"`
+		Name     string `json:"name,omitempty"`
+		HashedID string `json:"hashed_id,omitempty"`
 	} `json:"project,omitempty"`
 	Assets []Asset `json:"assets,omitempty"`
 }
