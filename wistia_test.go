@@ -78,7 +78,7 @@ func TestProjectsShow(t *testing.T) {
 		}, nil
 	}
 
-	project, err := wistiaClient.ProjectShow(ctx, "fakeID", nil)
+	project, err := wistiaClient.ProjectsShow(ctx, "fakeID", nil)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
@@ -88,6 +88,6 @@ func TestProjectsShow(t *testing.T) {
 	assert.EqualValues(t, 3, len(project.Medias))
 
 	for _, media := range project.Medias {
-		assert.Nil(t, media.Section)
+		assert.NotNil(t, media.Section)
 	}
 }

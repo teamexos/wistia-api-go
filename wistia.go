@@ -83,8 +83,8 @@ func (c *Client) ProjectsList(ctx context.Context,
 	return &res, nil
 }
 
-// ProjectShow returns a project from Wistia
-func (c *Client) ProjectShow(ctx context.Context,
+// ProjectsShow returns a project from Wistia
+func (c *Client) ProjectsShow(ctx context.Context,
 	id string,
 	options *PaginationOptions) (*Project, error) {
 
