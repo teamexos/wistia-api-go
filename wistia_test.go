@@ -4,6 +4,7 @@ package wistia_test
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"testing"
 
@@ -23,6 +24,78 @@ func init() {
 	httpClient = &mocks.MockHTTPClient{}
 	ctx = context.Background()
 	wistiaClient = wistia.NewClient(httpClient, "access_token")
+}
+
+func TestFailedRequest(t *testing.T) {
+	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return nil, errors.New("error")
+	}
+
+	_, err := wistiaClient.MediasShow(ctx, "fakeID", nil)
+
+	assert.NotNil(t, err)
+	assert.EqualValues(t, err.StatusCode, http.StatusInternalServerError)
+	assert.EqualValues(t, err.Message, "failed to make request")
+}
+
+func TestUnauthorized(t *testing.T) {
+	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusUnauthorized,
+			Body:       fixtures.ResponseUnauthorized(),
+		}, nil
+	}
+
+	_, err := wistiaClient.MediasShow(ctx, "fakeID", nil)
+
+	assert.NotNil(t, err)
+	assert.EqualValues(t, err.StatusCode, http.StatusUnauthorized)
+	assert.EqualValues(t, err.Message, "Invalid credentials.")
+}
+
+func TestMediaNotFound(t *testing.T) {
+	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusNotFound,
+			Body:       fixtures.ResponseMediaNotFound(),
+		}, nil
+	}
+
+	_, err := wistiaClient.MediasShow(ctx, "fakeID", nil)
+
+	assert.NotNil(t, err)
+	assert.EqualValues(t, err.StatusCode, http.StatusNotFound)
+	assert.EqualValues(t, err.Message, "Media with ID 123 not found.")
+}
+
+func TestProjectNotFound(t *testing.T) {
+	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusNotFound,
+			Body:       fixtures.ResponseProjectNotFound(),
+		}, nil
+	}
+
+	_, err := wistiaClient.ProjectsShow(ctx, "fakeID", nil)
+
+	assert.NotNil(t, err)
+	assert.EqualValues(t, err.StatusCode, http.StatusNotFound)
+	assert.EqualValues(t, err.Message, "Project with ID '123' not found.")
+}
+
+func TestRouteNotFound(t *testing.T) {
+	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusNotFound,
+			Body:       fixtures.ResponseRouteNotFound(),
+		}, nil
+	}
+
+	_, err := wistiaClient.ProjectsShow(ctx, "fakeID", nil)
+
+	assert.NotNil(t, err)
+	assert.EqualValues(t, err.StatusCode, http.StatusNotFound)
+	assert.EqualValues(t, err.Message, "Route not found")
 }
 
 func TestMediasShow(t *testing.T) {

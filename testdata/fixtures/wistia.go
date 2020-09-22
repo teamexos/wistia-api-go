@@ -23,3 +23,27 @@ func ProjectsShow() io.ReadCloser {
 	json := `{"anonymousCanDownload":false,"anonymousCanUpload":false,"created":"2013-09-19T15:05:15+00:00","description":"","hashedId":"ln2k6qwi9k","id":464427,"mediaCount":3,"medias":[{"created":"2013-09-19T15:05:17+00:00","description":"","duration":167.29,"hashed_id":"azh1x9nesb","id":4488635,"name":"How They Work: Zappos","progress":1,"status":"ready","thumbnail":{"height":60,"url":"http://embed.wistia.com/deliveries/11bb346da9e041a4ce5c8f0a37803f8ef50e2848.jpg?image_crop_resized=100x60","width":100},"type":"Video","updated":"2013-10-28T20:53:12+00:00"},{"created":"2013-09-19T15:30:49+00:00","description":"<p>\n\nWistia goes to Nevada to visit with Zappos to hear what they have to say about their company culture.&nbsp;</p>\n<p>\n\n&nbsp;</p>\n<p>\n\nFor more How They Work videos, check out:</p>\n<p>\n\n<a href=\"http://jeff.wistia.com/projects/ln2k6qwi9k\">http://jeff.wistia.com/projects/ln2k6qwi9k</a></p>\n","duration":167,"hashed_id":"v80gyfkt28","id":4489021,"name":"How They Work - Zappos","progress":1,"status":"ready","thumbnail":{"height":60,"url":"http://embed.wistia.com/deliveries/7fbf9c2fe9c6585f9aa032f43f0aecc3f287e86b.jpg?image_crop_resized=100x60","width":100},"type":"Video","updated":"2013-10-28T20:53:12+00:00"},{"created":"2013-09-19T15:44:10+00:00","description":"<p>\n\nWistia goes to Nevada to visit with Zappos to hear what they have to say about their company culture.&nbsp;</p>\n<p>\n\n&nbsp;</p>\n<p>\n\nFor more How They Work videos, check out:</p>\n<p>\n\n<a href=\"http://jeff.wistia.com/projects/ln2k6qwi9k\">http://jeff.wistia.com/projects/ln2k6qwi9k</a></p>\n","duration":167,"hashed_id":"cqvzbmyeid","id":4489159,"name":"How They Work - Zappos","progress":1,"status":"ready","thumbnail":{"height":60,"url":"http://embed.wistia.com/deliveries/1d5b471a6a28b5d54787ae01a67e8d20c3b39267.jpg?image_crop_resized=100x60","width":100},"type":"Video","updated":"2013-10-28T20:53:12+00:00"}],"name":"How They Work","public":true,"publicId":"ln2k6qwi9k","updated":"2013-10-28T20:53:12+00:00"}`
 	return ioutil.NopCloser(bytes.NewReader([]byte(json)))
 }
+
+// ResponseMediaNotFound returns an example media not found response
+func ResponseMediaNotFound() io.ReadCloser {
+	json := `{"error":"Media with ID 123 not found."}`
+	return ioutil.NopCloser(bytes.NewReader([]byte(json)))
+}
+
+// ResponseProjectNotFound returns an example project not found response
+func ResponseProjectNotFound() io.ReadCloser {
+	json := `{"error":"Project with ID '123' not found."}`
+	return ioutil.NopCloser(bytes.NewReader([]byte(json)))
+}
+
+// ResponseRouteNotFound returns an example Route not found response
+func ResponseRouteNotFound() io.ReadCloser {
+	json := `{"error":"Route not found"}`
+	return ioutil.NopCloser(bytes.NewReader([]byte(json)))
+}
+
+// ResponseUnauthorized returns an example Unauthorized response
+func ResponseUnauthorized() io.ReadCloser {
+	json := `{"code":"unauthorized_credentials","error":"Invalid credentials."}`
+	return ioutil.NopCloser(bytes.NewReader([]byte(json)))
+}
