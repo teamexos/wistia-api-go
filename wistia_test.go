@@ -25,6 +25,66 @@ func init() {
 	wistiaClient = wistia.NewClient(httpClient, "access_token")
 }
 
+func TestUnauthorized(t *testing.T) {
+	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusUnauthorized,
+			Body:       fixtures.ResponseUnauthorized(),
+		}, nil
+	}
+
+	_, err := wistiaClient.MediasShow(ctx, "fakeID", nil)
+
+	assert.NotNil(t, err)
+	assert.EqualValues(t, err.StatusCode, http.StatusUnauthorized)
+	assert.EqualValues(t, err.Message, http.StatusText(http.StatusUnauthorized))
+}
+
+func TestMediaNotFound(t *testing.T) {
+	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusNotFound,
+			Body:       fixtures.ResponseMediaNotFound(),
+		}, nil
+	}
+
+	_, err := wistiaClient.MediasShow(ctx, "fakeID", nil)
+
+	assert.NotNil(t, err)
+	assert.EqualValues(t, err.StatusCode, http.StatusNotFound)
+	assert.EqualValues(t, err.Message, http.StatusText(http.StatusNotFound))
+}
+
+func TestProjectNotFound(t *testing.T) {
+	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusNotFound,
+			Body:       fixtures.ResponseProjectNotFound(),
+		}, nil
+	}
+
+	_, err := wistiaClient.ProjectsShow(ctx, "fakeID", nil)
+
+	assert.NotNil(t, err)
+	assert.EqualValues(t, err.StatusCode, http.StatusNotFound)
+	assert.EqualValues(t, err.Message, http.StatusText(http.StatusNotFound))
+}
+
+func TestRouteNotFound(t *testing.T) {
+	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusNotFound,
+			Body:       fixtures.ResponseRouteNotFound(),
+		}, nil
+	}
+
+	_, err := wistiaClient.ProjectsShow(ctx, "fakeID", nil)
+
+	assert.NotNil(t, err)
+	assert.EqualValues(t, err.StatusCode, http.StatusNotFound)
+	assert.EqualValues(t, err.Message, http.StatusText(http.StatusNotFound))
+}
+
 func TestMediasShow(t *testing.T) {
 
 	mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {

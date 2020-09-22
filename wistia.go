@@ -36,7 +36,7 @@ func NewClient(httpClient HTTPClient, accessToken string) *Client {
 // MediasShow returns information about a specific piece of media
 func (c *Client) MediasShow(ctx context.Context,
 	id string,
-	options *PaginationOptions) (*Media, error) {
+	options *PaginationOptions) (*Media, *RequestError) {
 
 	opts := c.getOpts(options)
 	endpoint := fmt.Sprintf("%s/medias/%s.json?%s",
@@ -46,7 +46,7 @@ func (c *Client) MediasShow(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, err
+		return nil, NewError(http.StatusInternalServerError)
 	}
 
 	req = req.WithContext(ctx)
@@ -61,7 +61,7 @@ func (c *Client) MediasShow(ctx context.Context,
 
 // ProjectsList returns a list of projects from Wistia
 func (c *Client) ProjectsList(ctx context.Context,
-	options *PaginationOptions) (*Projects, error) {
+	options *PaginationOptions) (*Projects, *RequestError) {
 
 	opts := c.getOpts(options)
 	endpoint := fmt.Sprintf("%s/projects.json?%s",
@@ -70,7 +70,7 @@ func (c *Client) ProjectsList(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, err
+		return nil, NewError(http.StatusInternalServerError)
 	}
 
 	req = req.WithContext(ctx)
@@ -86,7 +86,7 @@ func (c *Client) ProjectsList(ctx context.Context,
 // ProjectsShow returns a project from Wistia
 func (c *Client) ProjectsShow(ctx context.Context,
 	id string,
-	options *PaginationOptions) (*Project, error) {
+	options *PaginationOptions) (*Project, *RequestError) {
 
 	opts := c.getOpts(options)
 	endpoint := fmt.Sprintf("%s/projects/%s.json?%s",
@@ -96,7 +96,7 @@ func (c *Client) ProjectsShow(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, err
+		return nil, NewError(http.StatusInternalServerError)
 	}
 
 	req = req.WithContext(ctx)
@@ -129,23 +129,23 @@ func (c *Client) getOpts(paginationOpts *PaginationOptions) string {
 		c.accessToken)
 }
 
-func (c *Client) sendRequest(req *http.Request, v interface{}) error {
+func (c *Client) sendRequest(req *http.Request, v interface{}) *RequestError {
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	req.Header.Set("Accept", "application/json; charset=utf-8")
 
 	res, err := c.httpClient.Do(req)
 	if err != nil {
-		return err
+		return NewError(http.StatusInternalServerError)
 	}
 
 	defer res.Body.Close()
 
-	if res.StatusCode < http.StatusOK || res.StatusCode >= http.StatusBadRequest {
-		return fmt.Errorf("unknown error, status code: %d", res.StatusCode)
+	if res.StatusCode != http.StatusOK {
+		return NewError(res.StatusCode)
 	}
 
 	if err = json.NewDecoder(res.Body).Decode(&v); err != nil {
-		return err
+		return NewError(http.StatusUnprocessableEntity)
 	}
 
 	return nil
