@@ -47,7 +47,7 @@ func (c *Client) MediasShow(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewResponseError(http.StatusInternalServerError, errCodeRequestSetupFailed)
+		return nil, wistiaErrorRequestSetup
 	}
 
 	req = req.WithContext(ctx)
@@ -71,7 +71,7 @@ func (c *Client) ProjectsList(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewResponseError(http.StatusInternalServerError, errCodeRequestSetupFailed)
+		return nil, wistiaErrorRequestSetup
 	}
 
 	req = req.WithContext(ctx)
@@ -97,7 +97,7 @@ func (c *Client) ProjectsShow(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewResponseError(http.StatusInternalServerError, errCodeRequestSetupFailed)
+		return nil, wistiaErrorRequestSetup
 	}
 
 	req = req.WithContext(ctx)
@@ -136,7 +136,7 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) *ResponseError {
 
 	res, err := c.httpClient.Do(req)
 	if err != nil {
-		return NewResponseError(http.StatusInternalServerError, errCodeRequestDoFailed)
+		return wistiaErrorRequestDo
 	}
 
 	defer res.Body.Close()
@@ -153,7 +153,7 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) *ResponseError {
 	}
 
 	if err = json.NewDecoder(res.Body).Decode(&v); err != nil {
-		return NewResponseError(http.StatusUnprocessableEntity, errCodeRequestDecodeFailed)
+		return wistiaErrorRequestDecode
 	}
 
 	return nil

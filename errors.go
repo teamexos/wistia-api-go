@@ -2,6 +2,7 @@ package wistia
 
 import (
 	"fmt"
+	"net/http"
 )
 
 const (
@@ -20,6 +21,12 @@ type (
 	wistiaError struct {
 		Error string `json:"error"`
 	}
+)
+
+var (
+	wistiaErrorRequestDecode = NewResponseError(http.StatusInternalServerError, errCodeRequestDecodeFailed)
+	wistiaErrorRequestDo     = NewResponseError(http.StatusInternalServerError, errCodeRequestDoFailed)
+	wistiaErrorRequestSetup  = NewResponseError(http.StatusInternalServerError, errCodeRequestSetupFailed)
 )
 
 // Error satisfies the contract with the error interface
