@@ -37,7 +37,7 @@ func TestUnauthorized(t *testing.T) {
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, err.StatusCode, http.StatusUnauthorized)
-	assert.EqualValues(t, err.Message, http.StatusText(http.StatusUnauthorized))
+	assert.EqualValues(t, err.Message, "Invalid credentials.")
 }
 
 func TestMediaNotFound(t *testing.T) {
@@ -52,7 +52,7 @@ func TestMediaNotFound(t *testing.T) {
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, err.StatusCode, http.StatusNotFound)
-	assert.EqualValues(t, err.Message, http.StatusText(http.StatusNotFound))
+	assert.EqualValues(t, err.Message, "Media with ID 123 not found.")
 }
 
 func TestProjectNotFound(t *testing.T) {
@@ -67,7 +67,7 @@ func TestProjectNotFound(t *testing.T) {
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, err.StatusCode, http.StatusNotFound)
-	assert.EqualValues(t, err.Message, http.StatusText(http.StatusNotFound))
+	assert.EqualValues(t, err.Message, "Project with ID '123' not found.")
 }
 
 func TestRouteNotFound(t *testing.T) {
@@ -82,7 +82,7 @@ func TestRouteNotFound(t *testing.T) {
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, err.StatusCode, http.StatusNotFound)
-	assert.EqualValues(t, err.Message, http.StatusText(http.StatusNotFound))
+	assert.EqualValues(t, err.Message, "Route not found")
 }
 
 func TestMediasShow(t *testing.T) {

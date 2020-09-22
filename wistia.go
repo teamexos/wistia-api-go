@@ -1,6 +1,7 @@
 package wistia
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -46,7 +47,7 @@ func (c *Client) MediasShow(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewError(http.StatusInternalServerError)
+		return nil, NewError(http.StatusInternalServerError, nil)
 	}
 
 	req = req.WithContext(ctx)
@@ -70,7 +71,7 @@ func (c *Client) ProjectsList(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewError(http.StatusInternalServerError)
+		return nil, NewError(http.StatusInternalServerError, nil)
 	}
 
 	req = req.WithContext(ctx)
@@ -96,7 +97,7 @@ func (c *Client) ProjectsShow(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewError(http.StatusInternalServerError)
+		return nil, NewError(http.StatusInternalServerError, nil)
 	}
 
 	req = req.WithContext(ctx)
@@ -135,17 +136,20 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) *RequestError {
 
 	res, err := c.httpClient.Do(req)
 	if err != nil {
-		return NewError(http.StatusInternalServerError)
+		return NewError(http.StatusInternalServerError, nil)
 	}
 
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return NewError(res.StatusCode)
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(res.Body)
+		bodyStr := buf.String()
+		return NewError(res.StatusCode, &bodyStr)
 	}
 
 	if err = json.NewDecoder(res.Body).Decode(&v); err != nil {
-		return NewError(http.StatusUnprocessableEntity)
+		return NewError(http.StatusUnprocessableEntity, nil)
 	}
 
 	return nil
