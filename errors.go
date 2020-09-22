@@ -1,7 +1,6 @@
 package wistia
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
@@ -21,14 +20,9 @@ func (e *RequestError) Error() string {
 }
 
 // NewError returns a RequestError
-func NewError(s int, m *string) *RequestError {
-	msg := wistiaError{}
-	if err := json.Unmarshal([]byte(*m), &msg); err != nil {
-		msg.Error = "Could not unmarshal response"
-	}
-
+func NewError(s int, m string) *RequestError {
 	return &RequestError{
 		StatusCode: s,
-		Message:    msg.Error,
+		Message:    m,
 	}
 }

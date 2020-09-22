@@ -47,7 +47,7 @@ func (c *Client) MediasShow(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewError(http.StatusInternalServerError, nil)
+		return nil, NewError(http.StatusInternalServerError, "failed to setup request")
 	}
 
 	req = req.WithContext(ctx)
@@ -71,7 +71,7 @@ func (c *Client) ProjectsList(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewError(http.StatusInternalServerError, nil)
+		return nil, NewError(http.StatusInternalServerError, "failed to setup request")
 	}
 
 	req = req.WithContext(ctx)
@@ -97,7 +97,7 @@ func (c *Client) ProjectsShow(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewError(http.StatusInternalServerError, nil)
+		return nil, NewError(http.StatusInternalServerError, "failed to setup request")
 	}
 
 	req = req.WithContext(ctx)
@@ -136,20 +136,24 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) *RequestError {
 
 	res, err := c.httpClient.Do(req)
 	if err != nil {
-		return NewError(http.StatusInternalServerError, nil)
+		return NewError(http.StatusInternalServerError, "failed to make request")
 	}
 
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
+		msg := wistiaError{}
 		buf := new(bytes.Buffer)
 		buf.ReadFrom(res.Body)
-		bodyStr := buf.String()
-		return NewError(res.StatusCode, &bodyStr)
+
+		if err := json.Unmarshal([]byte(buf.String()), &msg); err != nil {
+			msg.Error = "could not unmarshal response"
+		}
+		return NewError(res.StatusCode, msg.Error)
 	}
 
 	if err = json.NewDecoder(res.Body).Decode(&v); err != nil {
-		return NewError(http.StatusUnprocessableEntity, nil)
+		return NewError(http.StatusUnprocessableEntity, "failed to decode response")
 	}
 
 	return nil
