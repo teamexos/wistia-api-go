@@ -4,6 +4,12 @@ import (
 	"fmt"
 )
 
+const (
+	errCodeRequestDecodeFailed = "failed to decode response"
+	errCodeRequestDoFailed     = "failed to make request"
+	errCodeRequestSetupFailed  = "failed to setup request"
+)
+
 type (
 	// ResponseError is used for errors this package will return
 	ResponseError struct {
