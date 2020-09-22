@@ -14,7 +14,6 @@ go get -u github.com/teamexos/wistia-api-go
 import "github.com/teamexos/wistia-api-go"
 
 // Replace ACCESS_TOKEN with your real access token
-
 httpClient := wistia.DefaultHTTPClient()
 wistiaClient := wistia.NewClient(httpClient, "ACCESS_TOKEN")
 ```
