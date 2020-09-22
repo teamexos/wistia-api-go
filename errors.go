@@ -5,8 +5,8 @@ import (
 )
 
 type (
-	// RequestError is used for errors this package will return
-	RequestError struct {
+	// ResponseError is used for errors this package will return
+	ResponseError struct {
 		StatusCode int
 		Message    string
 	}
@@ -17,13 +17,13 @@ type (
 )
 
 // Error satisfies the contract with the error interface
-func (e *RequestError) Error() string {
+func (e *ResponseError) Error() string {
 	return fmt.Sprintf("statusCode: %d, error: %s", e.StatusCode, e.Message)
 }
 
-// NewError returns a RequestError
-func NewError(s int, m string) *RequestError {
-	return &RequestError{
+// NewResponseError returns a RequestError
+func NewResponseError(s int, m string) *ResponseError {
+	return &ResponseError{
 		StatusCode: s,
 		Message:    m,
 	}

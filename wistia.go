@@ -37,7 +37,7 @@ func NewClient(httpClient HTTPClient, accessToken string) *Client {
 // MediasShow returns information about a specific piece of media
 func (c *Client) MediasShow(ctx context.Context,
 	id string,
-	options *PaginationOptions) (*Media, *RequestError) {
+	options *PaginationOptions) (*Media, *ResponseError) {
 
 	opts := c.getOpts(options)
 	endpoint := fmt.Sprintf("%s/medias/%s.json?%s",
@@ -47,7 +47,7 @@ func (c *Client) MediasShow(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewError(http.StatusInternalServerError, "failed to setup request")
+		return nil, NewResponseError(http.StatusInternalServerError, "failed to setup request")
 	}
 
 	req = req.WithContext(ctx)
@@ -62,7 +62,7 @@ func (c *Client) MediasShow(ctx context.Context,
 
 // ProjectsList returns a list of projects from Wistia
 func (c *Client) ProjectsList(ctx context.Context,
-	options *PaginationOptions) (*Projects, *RequestError) {
+	options *PaginationOptions) (*Projects, *ResponseError) {
 
 	opts := c.getOpts(options)
 	endpoint := fmt.Sprintf("%s/projects.json?%s",
@@ -71,7 +71,7 @@ func (c *Client) ProjectsList(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewError(http.StatusInternalServerError, "failed to setup request")
+		return nil, NewResponseError(http.StatusInternalServerError, "failed to setup request")
 	}
 
 	req = req.WithContext(ctx)
@@ -87,7 +87,7 @@ func (c *Client) ProjectsList(ctx context.Context,
 // ProjectsShow returns a project from Wistia
 func (c *Client) ProjectsShow(ctx context.Context,
 	id string,
-	options *PaginationOptions) (*Project, *RequestError) {
+	options *PaginationOptions) (*Project, *ResponseError) {
 
 	opts := c.getOpts(options)
 	endpoint := fmt.Sprintf("%s/projects/%s.json?%s",
@@ -97,7 +97,7 @@ func (c *Client) ProjectsShow(ctx context.Context,
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, NewError(http.StatusInternalServerError, "failed to setup request")
+		return nil, NewResponseError(http.StatusInternalServerError, "failed to setup request")
 	}
 
 	req = req.WithContext(ctx)
@@ -130,13 +130,13 @@ func (c *Client) getOpts(paginationOpts *PaginationOptions) string {
 		c.accessToken)
 }
 
-func (c *Client) sendRequest(req *http.Request, v interface{}) *RequestError {
+func (c *Client) sendRequest(req *http.Request, v interface{}) *ResponseError {
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	req.Header.Set("Accept", "application/json; charset=utf-8")
 
 	res, err := c.httpClient.Do(req)
 	if err != nil {
-		return NewError(http.StatusInternalServerError, "failed to make request")
+		return NewResponseError(http.StatusInternalServerError, "failed to make request")
 	}
 
 	defer res.Body.Close()
@@ -149,11 +149,11 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) *RequestError {
 		if err := json.Unmarshal([]byte(buf.String()), &msg); err != nil {
 			msg.Error = "could not unmarshal response"
 		}
-		return NewError(res.StatusCode, msg.Error)
+		return NewResponseError(res.StatusCode, msg.Error)
 	}
 
 	if err = json.NewDecoder(res.Body).Decode(&v); err != nil {
-		return NewError(http.StatusUnprocessableEntity, "failed to decode response")
+		return NewResponseError(http.StatusUnprocessableEntity, "failed to decode response")
 	}
 
 	return nil
