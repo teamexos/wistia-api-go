@@ -4,15 +4,17 @@ import (
 	"fmt"
 )
 
-// RequestError is used for errors this package will return
-type RequestError struct {
-	StatusCode int
-	Message    string
-}
+type (
+	// RequestError is used for errors this package will return
+	RequestError struct {
+		StatusCode int
+		Message    string
+	}
 
-type wistiaError struct {
-	Error string `json:"error"`
-}
+	wistiaError struct {
+		Error string `json:"error"`
+	}
+)
 
 // Error satisfies the contract with the error interface
 func (e *RequestError) Error() string {
