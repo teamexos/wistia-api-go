@@ -34,7 +34,7 @@ func (e *ResponseError) Error() string {
 	return fmt.Sprintf("statusCode: %d, error: %s", e.StatusCode, e.Message)
 }
 
-// NewResponseError returns a RequestError
+// NewResponseError returns a ResponseError
 func NewResponseError(s int, m string) *ResponseError {
 	return &ResponseError{
 		StatusCode: s,
